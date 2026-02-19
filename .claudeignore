@@ -1,0 +1,12 @@
+# Dependencies - large, auto-generated
+node_modules/
+
+# Build output
+dist/
+
+# Coverage reports
+coverage/
+
+# Cache
+.vite/
+*.tsbuildinfo
