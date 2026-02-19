@@ -47,3 +47,61 @@ export const BATTLE_NODES: BattleNodeData[] = [
     description: 'Odsiecz Wiedeńska - Jan III Sobieski ratuje Europę',
   },
 ];
+
+export const MENU_LAYOUT = {
+  // Stripe dimensions (Polish flag)
+  STRIPE_HEIGHT: 48,
+  WHITE_STRIPE_HEIGHT: 24,
+
+  // Panel geometry
+  PANEL_MARGIN: 40,
+  SEPARATOR_INSET: 56, // 40 + 16
+
+  // Title positioning
+  TITLE_Y: 140,
+  SUBTITLE_Y: 220,
+  DECO_LINE_Y: 248,
+  DECO_LINE_HALF_WIDTH: 200,
+  DECO_LINE_OUTER_HALF_WIDTH: 300,
+
+  // Font sizes
+  TITLE_FONT_SIZE: '64px',
+  SUBTITLE_FONT_SIZE: '28px',
+
+  // Vertical layout zones for Phase 3-5
+  TIMELINE_Y: 450,
+  TIMELINE_PADDING_X: 120,
+  EAGLE_X: 1100,
+  HUSSAR_X: 180,
+  SPRITES_Y: 520,
+} as const;
+
+export const TEXT_STYLES = {
+  TITLE: {
+    fontFamily: FONT_FAMILY,
+    fontSize: MENU_LAYOUT.TITLE_FONT_SIZE,
+    color: '#ffffff',
+    stroke: '#dc143c',
+    strokeThickness: 4,
+    shadow: {
+      offsetX: 3,
+      offsetY: 3,
+      color: '#000000',
+      blur: 8,
+      fill: true,
+    },
+  },
+  SUBTITLE: {
+    fontFamily: FONT_FAMILY,
+    fontSize: MENU_LAYOUT.SUBTITLE_FONT_SIZE,
+    color: '#dc143c',
+    letterSpacing: 8,
+    shadow: {
+      offsetX: 2,
+      offsetY: 2,
+      color: '#000000',
+      blur: 4,
+      fill: true,
+    },
+  },
+} as const;

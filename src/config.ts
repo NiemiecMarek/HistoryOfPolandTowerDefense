@@ -10,5 +10,4 @@ export const phaserConfig: Phaser.Types.Core.GameConfig = {
   pixelArt: true,
   antialias: false,
   scene: [BootScene, MenuScene],
-  parent: document.body,
 };

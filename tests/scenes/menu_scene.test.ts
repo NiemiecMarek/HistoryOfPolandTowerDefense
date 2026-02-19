@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { COLORS, BATTLE_NODES, DEPTHS, FONT_FAMILY } from '../../src/constants';
+import {
+  COLORS,
+  BATTLE_NODES,
+  DEPTHS,
+  FONT_FAMILY,
+  MENU_LAYOUT,
+  TEXT_STYLES,
+} from '../../src/constants';
 
 describe('MenuScene constants', () => {
   it('should have correct background color', () => {
@@ -37,5 +44,108 @@ describe('MenuScene constants', () => {
 
   it('should have FONT_FAMILY defined', () => {
     expect(FONT_FAMILY).toContain('Courier New');
+  });
+});
+
+describe('MenuScene visual configuration', () => {
+  it('should have WHITE color for title', () => {
+    expect(COLORS.WHITE).toBe(0xffffff);
+  });
+
+  it('should have GOLD color for decorative elements', () => {
+    expect(COLORS.GOLD).toBe(0xffd700);
+  });
+
+  it('should have UI depth higher than background', () => {
+    expect(DEPTHS.UI).toBeGreaterThan(DEPTHS.BG);
+    expect(DEPTHS.UI).toBeGreaterThan(DEPTHS.PANEL);
+    expect(DEPTHS.UI).toBeGreaterThan(DEPTHS.DECORATIONS);
+  });
+
+  it('should have correct depth ordering', () => {
+    expect(DEPTHS.BG).toBeLessThan(DEPTHS.PANEL);
+    expect(DEPTHS.PANEL).toBeLessThan(DEPTHS.DECORATIONS);
+    expect(DEPTHS.DECORATIONS).toBeLessThan(DEPTHS.TIMELINE);
+    expect(DEPTHS.TIMELINE).toBeLessThan(DEPTHS.SPRITES);
+    expect(DEPTHS.SPRITES).toBeLessThan(DEPTHS.UI);
+    expect(DEPTHS.UI).toBeLessThan(DEPTHS.TOOLTIP);
+    expect(DEPTHS.TOOLTIP).toBeLessThan(DEPTHS.MODAL);
+    expect(DEPTHS.MODAL).toBeLessThan(DEPTHS.MODAL_CONTENT);
+  });
+
+  it('should have 3 battles with required properties', () => {
+    BATTLE_NODES.forEach(node => {
+      expect(node.year).toBeGreaterThan(1000);
+      expect(node.name).toBeTruthy();
+      expect(node.description).toBeTruthy();
+    });
+  });
+});
+
+describe('MENU_LAYOUT', () => {
+  it('should have positive stripe height', () => {
+    expect(MENU_LAYOUT.STRIPE_HEIGHT).toBeGreaterThan(0);
+  });
+
+  it('should have white stripe smaller than main stripe', () => {
+    expect(MENU_LAYOUT.WHITE_STRIPE_HEIGHT).toBeLessThan(MENU_LAYOUT.STRIPE_HEIGHT);
+  });
+
+  it('should have title above subtitle', () => {
+    expect(MENU_LAYOUT.TITLE_Y).toBeLessThan(MENU_LAYOUT.SUBTITLE_Y);
+  });
+
+  it('should have subtitle above decorative line', () => {
+    expect(MENU_LAYOUT.SUBTITLE_Y).toBeLessThan(MENU_LAYOUT.DECO_LINE_Y);
+  });
+
+  it('should have timeline below title area', () => {
+    expect(MENU_LAYOUT.TIMELINE_Y).toBeGreaterThan(MENU_LAYOUT.DECO_LINE_Y);
+  });
+
+  it('should have eagle on the right side', () => {
+    expect(MENU_LAYOUT.EAGLE_X).toBeGreaterThan(640); // right half
+  });
+
+  it('should have hussar on the left side', () => {
+    expect(MENU_LAYOUT.HUSSAR_X).toBeLessThan(640); // left half
+  });
+
+  it('should have font sizes as strings', () => {
+    expect(MENU_LAYOUT.TITLE_FONT_SIZE).toMatch(/^\d+px$/);
+    expect(MENU_LAYOUT.SUBTITLE_FONT_SIZE).toMatch(/^\d+px$/);
+  });
+
+  it('should have title font larger than subtitle font', () => {
+    const titleSize = parseInt(MENU_LAYOUT.TITLE_FONT_SIZE, 10);
+    const subtitleSize = parseInt(MENU_LAYOUT.SUBTITLE_FONT_SIZE, 10);
+    expect(titleSize).toBeGreaterThan(subtitleSize);
+  });
+});
+
+describe('TEXT_STYLES', () => {
+  it('should have TITLE style with correct font family', () => {
+    expect(TEXT_STYLES.TITLE.fontFamily).toContain('Courier New');
+  });
+
+  it('should have TITLE style with white color', () => {
+    expect(TEXT_STYLES.TITLE.color).toBe('#ffffff');
+  });
+
+  it('should have TITLE style with red stroke', () => {
+    expect(TEXT_STYLES.TITLE.stroke).toBe('#dc143c');
+  });
+
+  it('should have SUBTITLE style with red color', () => {
+    expect(TEXT_STYLES.SUBTITLE.color).toBe('#dc143c');
+  });
+
+  it('should have SUBTITLE style with letter spacing', () => {
+    expect(TEXT_STYLES.SUBTITLE.letterSpacing).toBeGreaterThan(0);
+  });
+
+  it('should have both styles with shadow', () => {
+    expect(TEXT_STYLES.TITLE.shadow).toBeDefined();
+    expect(TEXT_STYLES.SUBTITLE.shadow).toBeDefined();
   });
 });
