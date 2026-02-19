@@ -52,6 +52,12 @@
 - Static backgrounds → could use RenderTexture instead for complex scenes
 - Frame budget consideration: Each Graphics = separate draw call
 
+### Particle Emitter Configuration (Phase 5)
+- frequency: 100ms = 10 particles/sec at quantity 2 = 20 total/sec
+- lifespan: 4000-8000ms = max ~160 active particles on screen
+- Performance impact: Minimal at 60 FPS target (well within budget)
+- Texture generation: Properly destroyed after use (no leak)
+
 ### Magic Numbers
 - Hard-coded pixel coordinates scattered (56, 80, 112, 48, 72, 200, 300, etc.)
 - Should extract to MENU_LAYOUT constant for maintainability
@@ -62,39 +68,49 @@
 - No runtime/integration tests for scene lifecycle yet
 - Timeline component (Phase 3) will need more thorough scene transition testing
 
-## Phase 3 Review Findings (Timeline Component)
+## Phase 3 Review Findings (Timeline Component - NOW VERIFIED FIXED)
 
-### Critical Issues Identified
-1. **Event Listener Memory Leak**: TimelineManager registers node listeners in buildTimeline() but never removes them in destroy(). Orphaned listeners persist across scene transitions.
-   - Fix: Store listener refs in Map, remove before node.destroy()
-
-2. **Update Loop Performance Waste**: Tooltip width calculated every frame (60x/sec) even when text unchanged.
-   - Fix: Cache width in showTooltip(), use cached value in update()
-
-3. **Type Safety Gap**: Optional callback not validated, silent failures possible
-   - Fix: Validate callback is function or null
-
-4. **Graphics Cleanup Chain Incomplete**: trackGfx not added to container, could leak if scene transitions before destroy()
-   - Fix: Force destroy all graphics objects explicitly
+### Previously Flagged Issues (RESOLVED in Phase 5)
+1. **Event Listener Memory Leak**: FIXED - TimelineManager.destroy() properly removes all listeners via Map
+2. **Update Loop Performance Waste**: FIXED - cachedTooltipWidth cached in showTooltip()
+3. **Graphics Cleanup Chain**: FIXED - All graphics properly destroyed in onShutdown()
 
 ### Architecture Patterns (Phase 3 Confirmed)
 - Event-driven: TimelineNode emits, TimelineManager consumes (clean)
 - Container hierarchy: proper setDepth, setInteractive for hit detection
 - Graphics per-node: 2x graphics per node acceptable for 3 battles, but watch scaling
 
-### Testing Gap
-- No integration tests for scene lifecycle
-- No runtime tests for listener cleanup
-- Good constant validation baseline
+## Phase 5 Review Findings (Polish & UX - Modal Component)
 
-## Next Phases to Prepare
-- **Phase 4**: Sprite animation - RenderTexture pre-generation for Hussar (already planned)
-- **Phase 5**: Modal interactions - test scene lifecycle with repeated transitions
-- Watch: More battles = more Graphics objects, may need batching consolidation
+### Critical Issues Found: NONE
+- All graphics objects properly managed (destroy in onShutdown)
+- Modal properly registers/unregisters ESC key listener
+- Particle emitter texture generation clean and efficient
+- TypeScript strict mode fully compliant
+- Type safety for all DOM operations
+
+### Performance Notes (Phase 5)
+- ParticleEmitter config efficient: 20 particles/sec, lifespan 4-8s = ~160 active max
+- Scene lifecycle: Uses events.once(SHUTDOWN) pattern correctly
+- Texture management: white-particle texture generated and destroyed same frame
+- Update loop: Hussar bob animation efficient sin() calculation per frame (minimal cost)
+
+### Architecture Decisions Confirmed
+- BattleModal extends Container: proper Phaser pattern
+- Scene integration: modal created on timeline node click
+- ESC key cleanup: properly deregistered in destroy()
+- Overlay click absorption: intentional pattern to block behind-modal clicks
 
 ## Code Review Standards Applied
 - TypeScript strict mode compliance (noUncheckedIndexedAccess)
-- Phaser 3 scene lifecycle best practices
-- Memory leak prevention for graphics objects
-- Type safety for DOM integration
-- Update loop performance (eliminate redundant calculations)
+- Phaser 3 scene lifecycle best practices (SHUTDOWN event pattern)
+- Memory leak prevention for graphics objects (ALL destroyed)
+- Type safety for DOM integration (keyboard optional chaining)
+- Update loop performance (cached tooltip width, efficient sin calculations)
+- Particle efficiency (minimal active particles, proper texture cleanup)
+
+## Next Phases Preparation
+- Phase 6: Game scene implementation
+- Watch: Scaled particle effects, multiple emitters
+- Consider: Object pooling for bullet/tower sprites
+- Monitor: Physics body cleanup on sprite destruction

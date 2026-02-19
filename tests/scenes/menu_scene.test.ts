@@ -123,6 +123,24 @@ describe('MENU_LAYOUT', () => {
   });
 });
 
+describe('MENU_LAYOUT Phase 5 additions', () => {
+  it('should have SELECTED_BATTLE_Y defined', () => {
+    expect(MENU_LAYOUT.SELECTED_BATTLE_Y).toBe(620);
+  });
+
+  it('should have MODAL_PANEL_WIDTH defined', () => {
+    expect(MENU_LAYOUT.MODAL_PANEL_WIDTH).toBe(500);
+  });
+
+  it('should have MODAL_PANEL_HEIGHT defined', () => {
+    expect(MENU_LAYOUT.MODAL_PANEL_HEIGHT).toBe(300);
+  });
+
+  it('should have selected battle text below timeline', () => {
+    expect(MENU_LAYOUT.SELECTED_BATTLE_Y).toBeGreaterThan(MENU_LAYOUT.TIMELINE_Y);
+  });
+});
+
 describe('TEXT_STYLES', () => {
   it('should have TITLE style with correct font family', () => {
     expect(TEXT_STYLES.TITLE.fontFamily).toContain('Courier New');
