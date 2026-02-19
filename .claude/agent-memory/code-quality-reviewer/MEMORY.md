@@ -62,13 +62,39 @@
 - No runtime/integration tests for scene lifecycle yet
 - Timeline component (Phase 3) will need more thorough scene transition testing
 
+## Phase 3 Review Findings (Timeline Component)
+
+### Critical Issues Identified
+1. **Event Listener Memory Leak**: TimelineManager registers node listeners in buildTimeline() but never removes them in destroy(). Orphaned listeners persist across scene transitions.
+   - Fix: Store listener refs in Map, remove before node.destroy()
+
+2. **Update Loop Performance Waste**: Tooltip width calculated every frame (60x/sec) even when text unchanged.
+   - Fix: Cache width in showTooltip(), use cached value in update()
+
+3. **Type Safety Gap**: Optional callback not validated, silent failures possible
+   - Fix: Validate callback is function or null
+
+4. **Graphics Cleanup Chain Incomplete**: trackGfx not added to container, could leak if scene transitions before destroy()
+   - Fix: Force destroy all graphics objects explicitly
+
+### Architecture Patterns (Phase 3 Confirmed)
+- Event-driven: TimelineNode emits, TimelineManager consumes (clean)
+- Container hierarchy: proper setDepth, setInteractive for hit detection
+- Graphics per-node: 2x graphics per node acceptable for 3 battles, but watch scaling
+
+### Testing Gap
+- No integration tests for scene lifecycle
+- No runtime tests for listener cleanup
+- Good constant validation baseline
+
 ## Next Phases to Prepare
-- **Phase 3**: Timeline Component - will have many interactive Graphics objects (watch for batching)
 - **Phase 4**: Sprite animation - RenderTexture pre-generation for Hussar (already planned)
 - **Phase 5**: Modal interactions - test scene lifecycle with repeated transitions
+- Watch: More battles = more Graphics objects, may need batching consolidation
 
 ## Code Review Standards Applied
 - TypeScript strict mode compliance (noUncheckedIndexedAccess)
 - Phaser 3 scene lifecycle best practices
 - Memory leak prevention for graphics objects
 - Type safety for DOM integration
+- Update loop performance (eliminate redundant calculations)

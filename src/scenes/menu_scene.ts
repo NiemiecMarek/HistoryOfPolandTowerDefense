@@ -1,10 +1,12 @@
 import Phaser from 'phaser';
-import { COLORS, DEPTHS, MENU_LAYOUT, TEXT_STYLES } from '../constants';
+import { COLORS, DEPTHS, MENU_LAYOUT, TEXT_STYLES, BattleNodeData } from '../constants';
+import { TimelineManager } from '../ui/timeline_manager';
 
 export class MenuScene extends Phaser.Scene {
   private bgGraphics!: Phaser.GameObjects.Graphics;
   private decorGraphics!: Phaser.GameObjects.Graphics;
   private titleGraphics!: Phaser.GameObjects.Graphics;
+  private timeline?: TimelineManager;
 
   constructor() {
     super({ key: 'MenuScene' });
@@ -16,6 +18,7 @@ export class MenuScene extends Phaser.Scene {
     this.createBackground(width, height);
     this.createDecorativeStripes(width, height);
     this.createTitle(width);
+    this.createTimeline();
 
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.onShutdown, this);
   }
@@ -90,9 +93,26 @@ export class MenuScene extends Phaser.Scene {
     );
   }
 
+  update(_time: number, _delta: number): void {
+    const pointer = this.input.activePointer;
+    if (this.timeline && pointer) {
+      this.timeline.update(pointer);
+    }
+  }
+
+  private createTimeline(): void {
+    this.timeline = new TimelineManager(
+      this,
+      (data: BattleNodeData) => {
+        console.log(`Battle selected: ${data.name} (${data.year})`);
+      },
+    );
+  }
+
   private onShutdown(): void {
     this.bgGraphics?.destroy();
     this.decorGraphics?.destroy();
     this.titleGraphics?.destroy();
+    this.timeline?.destroy();
   }
 }

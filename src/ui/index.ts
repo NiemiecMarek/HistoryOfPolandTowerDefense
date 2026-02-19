@@ -1,1 +1,2 @@
-// UI components - to be implemented in later phases
+export { TimelineNode } from './timeline_node';
+export { TimelineManager } from './timeline_manager';
